@@ -1,66 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Tersea-Test-Backend - Laravel REST API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a backend application built with Laravel that serves as a mini CRM (Customer Relationship Management) system. The purpose of this technical test is to evaluate your problem-solving skills and code structuring abilities.
 
-## About Laravel
+The application connects a company with its employees, allowing the company's administrator to create a company and invite employees to join via email. Once an employee is invited and registered, they can access and modify their own data, as well as view the data of their company and colleagues.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The application consists of two protected areas, each requiring authentication:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. Administrator Area:
+   - This section is accessible only to administrators.
+   - Administrators have the privilege to create new companies.
+   - Administrators can invite employees to join a company by sending email invitations.
+   - Administrators can manage and update company information.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. Employee Area:
+   - This section is accessible to registered employees.
+   - Employees can view and edit their personal information.
+   - Employees can access and view data related to their company and colleagues.
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Clone the repository:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+git clone https://github.com/your-username/Tearsea-Test-Backend.git
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+2. Install the dependencies by navigating into the project directory and running the following command:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+composer install
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+3. Create a copy of the `.env.example` file and rename it to `.env`. Configure the database connection and email settings in this file.
 
-## Contributing
+4. Run the database migrations to set up the required tables:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+php artisan migrate
 
-## Code of Conduct
+5. Start the development server:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+php artisan serve
 
-## Security Vulnerabilities
+## API Endpoints
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The application provides the following REST API endpoints:
 
-## License
+- `POST /api/register`: Register a new admin account (Administrator only).
+- `POST /api/login`: Authenticate and generate an access token.
+- `POST /api/logout`: Invalidate the access token and log out the user.
+- `POST /api/companies`: Create a new company (Administrator only).
+- `POST /api/invite`: Invite an employee to join a company by email and name (Administrator only).
+- `GET /api/companies`: Retrieve a list of all companies (Administrator only).
+- `GET /api/companies/{company_id}`: Retrieve details of a specific company (Administrator only).
+- `PUT /api/companies/{company_id}`: Update the details of a specific company (Administrator only).
+- `DELETE /api/companies/{company_id}`: Delete a specific company (Administrator only).
+- `GET /api/employees`: Retrieve a list of all employees (Administrator only).
+- `GET /api/employees/{employee_id}`: Retrieve details of a specific employee (Administrator only).
+- `GET /api/invitations`: Retrieve a list of all invitations and their status (Administrator only).
+- `GET /api/histories`: Retrieve a list of all admins histories (Administrator only).
+- `GET /api/histories/{admin_id}`: Retrieve a list of histories of a specific admin (Administrator only).
+- `PUT /api/employees/{employee_id}`: Update the details of a spicefic employee.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Conclusion
+
+This mini CRM backend provides a foundation for managing companies and employees, allowing administrators to create companies, invite employees, and manage company and employee data. Employees can access and modify their own information, as well as view company and colleague data.
+
+Feel free to explore the provided API endpoints and customize the application.
