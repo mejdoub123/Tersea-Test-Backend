@@ -52,7 +52,6 @@ The application provides the following REST API endpoints:
 - `GET /api/companies/{company_id}`: Retrieve details of a specific company (Administrator only).
 - `PUT /api/companies/{company_id}`: Update the details of a specific company (Administrator only).
 - `DELETE /api/companies/{company_id}`: Delete a specific company (Administrator only).
-- `GET /api/employees`: Retrieve a list of all employees (Administrator only).
 - `GET /api/employees/{employee_id}`: Retrieve details of a specific employee (Administrator only).
 - `GET /api/invitations/{admin_id}`: Retrieve a list of all invitations and their status of a specific admin (Administrator only).
 - `GET /api/histories`: Retrieve a list of all admins histories (Administrator only).
