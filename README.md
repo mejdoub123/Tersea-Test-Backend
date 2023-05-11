@@ -54,10 +54,10 @@ The application provides the following REST API endpoints:
 - `DELETE /api/companies/{company_id}`: Delete a specific company (Administrator only).
 - `GET /api/employees`: Retrieve a list of all employees (Administrator only).
 - `GET /api/employees/{employee_id}`: Retrieve details of a specific employee (Administrator only).
-- `GET /api/invitations`: Retrieve a list of all invitations and their status (Administrator only).
+- `GET /api/invitations/{admin_id}`: Retrieve a list of all invitations and their status of a specific admin (Administrator only).
 - `GET /api/histories`: Retrieve a list of all admins histories (Administrator only).
 - `GET /api/histories/{admin_id}`: Retrieve a list of histories of a specific admin (Administrator only).
-- `PUT /api/employees/{employee_id}`: Update the details of a spicefic employee.
+- `PUT /api/users/{user_id}`: Update the details of a spicefic user (Administrator or Employee).
 
 ## Conclusion
 
