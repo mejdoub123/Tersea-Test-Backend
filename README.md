@@ -1,8 +1,6 @@
 # Tersea-Test-Backend - Laravel REST API
 
-This is a backend application built with Laravel that serves as a mini CRM (Customer Relationship Management) system. The purpose of this technical test is to evaluate your problem-solving skills and code structuring abilities.
-
-The application connects a company with its employees, allowing the company's administrator to create a company and invite employees to join via email. Once an employee is invited and registered, they can access and modify their own data, as well as view the data of their company and colleagues.
+This is a backend application built with Laravel that serves as a mini CRM (Customer Relationship Management) system.
 
 The application consists of two protected areas, each requiring authentication:
 
