@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('histories', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('admin_id')->constrained('users');
-            $table->string('name');
-            $table->string('content');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('invitation_id')->nullable()->constrained();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('histories');
+        Schema::table('users', function ($table) {
+            $table->dropColumn('invitation_id');
+        });
     }
 };

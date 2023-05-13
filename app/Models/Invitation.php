@@ -10,10 +10,17 @@ class Invitation extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    public function user():BelongsTo {
-        return $this->belongsTo(User::class);
+    public function sender(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'sender_id');
     }
-    public function company():BelongsTo {
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'employee_id');
+    }
+
+    public function company(): BelongsTo
+    {
         return $this->belongsTo(Company::class);
     }
 }

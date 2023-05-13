@@ -47,19 +47,26 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function companies():HasMany {
-        return $this->hasMany(Company::class,'admin_id');
+    public function companies(): HasMany
+    {
+        return $this->hasMany(Company::class, 'admin_id');
     }
 
-    public function invitations():HasMany {
+    public function invitation(): HasOne
+    {
+        return $this->hasOne(Invitation::class);
+    }
+    public function invitations(): HasMany
+    {
         return $this->hasMany(Invitation::class);
     }
-
-    public function histories():HasMany {
+    public function histories(): HasMany
+    {
         return $this->hasMany(Histories::class);
     }
 
-    public function company():BelongsTo {
+    public function company(): BelongsTo
+    {
         return $this->belongsTo(Company::class);
     }
 }
