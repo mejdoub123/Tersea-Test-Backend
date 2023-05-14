@@ -29,13 +29,14 @@ class CompanyController extends Controller
         $company->save();
 
         return response()->json([
-            'company' => $company
+            'company' => $company,
+            'admin' => $company->admin()->first(),
+            'employees' => [],
         ], 201);
     }
-    public function adminCompanies()
+    public function getCompanies()
     {
-        $admin = auth()->user();
-        $companies = $admin->companies()->get();
+        $companies = Company::get();
         $collection = collect($companies)->map(function ($company) {
             return [
                 'company' => $company,
@@ -99,6 +100,8 @@ class CompanyController extends Controller
         }
         $company->delete();
 
-        return response()->noContent();
+        return response()->json([
+            'message' => 'Company removed successfully!',
+        ], 200);
     }
 }

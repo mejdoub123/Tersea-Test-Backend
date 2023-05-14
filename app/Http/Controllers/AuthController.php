@@ -159,25 +159,32 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'nullable|string',
-            'email' => 'nullable|email|unique:users,email',
-            'cin' => 'nullable|unique:users,cin',
+            'email' => 'nullable|email',
+            'cin' => 'nullable|string',
             'phone' => 'nullable|string',
             'address' => 'nullable|string',
         ]);
 
-        if ($request->input('name')) {
+        if ($request->input('name') && ($user->name != $request->input('name'))) {
             $user->name = $request->input('name');
         }
-        if ($request->input('email')) {
+        if ($request->input('email') && ($user->email != $request->input('email'))) {
+            $request->validate([
+                'email' => 'unique:users,email',
+            ]);
+
             $user->email = $request->input('email');
         }
-        if ($request->input('cin')) {
+        if ($request->input('cin') && ($user->cin != $request->input('cin'))) {
+            $request->validate([
+                'cin' => 'unique:users,cin',
+            ]);
             $user->cin = $request->input('cin');
         }
-        if ($request->input('address')) {
+        if ($request->input('address') && ($user->address != $request->input('address'))) {
             $user->address = $request->input('address');
         }
-        if ($request->input('phone')) {
+        if ($request->input('phone') && ($user->phone != $request->input('phone'))) {
             $user->phone = $request->input('phone');
         }
 

@@ -17,15 +17,11 @@ class InvitationController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $admin = auth()->user();
+        $invitations = $admin->invitations()->get();
+        return response()->json([
+            'invitations' => $invitations,
+        ], 200);
     }
 
     /**
@@ -34,7 +30,7 @@ class InvitationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "email" => "required|email|unique:users|unique:invitations,employee_email",
+            "email" => "required|email|unique:users,email|unique:invitations,employee_email",
             "name" => "required|string",
             "link" => "required|string",
             "company_id" => "required|exists:companies,id",
@@ -67,35 +63,13 @@ class InvitationController extends Controller
             Mail::to($data['email'])->send(new MailInvitation($data));
             $invitation->save();
             $history->save();
-            return response()->json(['Email sended successfully !']);
+            return response()->json([
+                'invitation' => $invitation,
+                'history' => $history
+            ], 201);
         } catch (Exception $e) {
-            dd($e);
-            return response()->json(['Sorry! Please try again latter']);
+            return response()->json(['message' => 'Sorry! Please try again latter'], 401);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Invitation $invitation)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Invitation $invitation)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Invitation $invitation)
-    {
-        //
     }
 
     /**
