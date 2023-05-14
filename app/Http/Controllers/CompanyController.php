@@ -65,21 +65,24 @@ class CompanyController extends Controller
     {
         $request->validate([
             'name' => 'nullable|string',
-            'company_email' => 'nullable|email|unique:companies',
+            'company_email' => 'nullable|email',
             'address' => 'nullable|string',
             'phone' => 'nullable|string'
         ]);
 
-        if ($request->input('name')) {
+        if ($request->input('name') && $company->name != $request->input('name')) {
             $company->name = $request->input('name');
         }
-        if ($request->input('company_email')) {
+        if ($request->input('company_email') && $company->company_email != $request->input('company_email')) {
+            $request->validate([
+                'company_email' => 'unique:companies,company_email'
+            ]);
             $company->company_email = $request->input('company_email');
         }
-        if ($request->input('address')) {
+        if ($request->input('address') && $company->address != $request->input('address')) {
             $company->address = $request->input('address');
         }
-        if ($request->input('phone')) {
+        if ($request->input('phone') && $company->phone != $request->input('phone')) {
             $company->phone = $request->input('phone');
         }
 

@@ -77,6 +77,20 @@ class InvitationController extends Controller
      */
     public function destroy(Invitation $invitation)
     {
-        //
+        $history = new History;
+
+        $admin = auth()->user();
+
+        $history->name = "Cancel invitation";
+        $history->content = 'Admin "' . $admin->name . '" has cancel the invitation that he send to "' . $invitation->employee_name . '"';
+        $history->user()->associate($admin->id);
+
+        $history->save();
+
+        $invitation->delete();
+
+        return response()->json([
+            'history' => $history,
+        ], 200);
     }
 }

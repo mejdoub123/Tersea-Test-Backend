@@ -32,5 +32,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/companies', [CompanyController::class, 'getCompanies']);
     Route::get('/histories', [HistoryController::class, 'index']);
     Route::get('/invitations', [InvitationController::class, 'index']);
+    Route::delete('/invitations/{invitation}', [InvitationController::class, 'destroy']);
     Route::post('invite', [InvitationController::class, 'store']);
 });

@@ -58,7 +58,7 @@ class User extends Authenticatable
     }
     public function invitations(): HasMany
     {
-        return $this->hasMany(Invitation::class);
+        return $this->hasMany(Invitation::class, 'sender_id');
     }
     public function histories(): HasMany
     {
