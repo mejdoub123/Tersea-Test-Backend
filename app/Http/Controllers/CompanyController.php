@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
@@ -90,6 +91,23 @@ class CompanyController extends Controller
 
         return response()->json([
             'company' => $company,
+        ], 200);
+    }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'searched_value' => 'required|string'
+        ]);
+
+        $companies = Company::where('name', 'like', '%' . $request->input('searched_value') . '%')->get();
+
+        $employees = User::where('is_admin', false)->where('name', 'like', '%' . $request->input('searched_value') . '%')->get();
+        return response()->json([
+            'results' => [
+                'companies' => $companies,
+                'employees' => $employees,
+            ]
         ], 200);
     }
 
