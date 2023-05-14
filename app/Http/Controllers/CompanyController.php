@@ -19,45 +19,45 @@ class CompanyController extends Controller
 
         $company = new Company;
 
-        $company->name= $request->input('name');
+        $company->name = $request->input('name');
         $company->company_email = $request->input('company_email');
-        $company->address =$request->input('address');
-        $company->phone =$request->input('phone') ? $request->input('phone') : null;
-    
+        $company->address = $request->input('address');
+        $company->phone = $request->input('phone') ? $request->input('phone') : null;
+
         $company->admin()->associate($request->input('admin_id'));
-        
+
         $company->save();
 
         return response()->json([
             'company' => $company
         ], 201);
     }
-    public function adminCompanies(){
+    public function adminCompanies()
+    {
         $admin = auth()->user();
         $companies = $admin->companies()->get();
-        $collection = collect($companies)->map(function($company){
+        $collection = collect($companies)->map(function ($company) {
             return [
-                'company'=>$company,
-                'admin'=>$company->admin()->first(),
-                'employees'=>$company->employees()->get()
+                'company' => $company,
+                'admin' => $company->admin()->first(),
+                'employees' => $company->employees()->get()
             ];
         });
         return response()->json([
             'companies' => $collection,
         ], 200);
     }
-   
+
     public function show(Company $company)
     {
         $admin = $company->admin()->first();
         $employees = $company->employees()->get();
 
         return response()->json([
-            'company' => $company->toArray(),
+            'company' => $company,
             'admin' => $admin,
-            'employees'=> $employees
+            'employees' => $employees
         ], 200);
-        
     }
 
     public function update(Request $request, Company $company)
@@ -69,33 +69,33 @@ class CompanyController extends Controller
             'phone' => 'nullable|string'
         ]);
 
-        if($request->input('name')){
+        if ($request->input('name')) {
             $company->name = $request->input('name');
         }
-        if($request->input('company_email')){
+        if ($request->input('company_email')) {
             $company->company_email = $request->input('company_email');
         }
-        if($request->input('address')){
+        if ($request->input('address')) {
             $company->address = $request->input('address');
         }
-        if($request->input('phone')){
+        if ($request->input('phone')) {
             $company->phone = $request->input('phone');
         }
 
         $company->save();
 
         return response()->json([
-            'company' => $company->toArray(),
+            'company' => $company,
         ], 200);
     }
 
     public function destroy(Company $company)
     {
-        $employees=$company->employees()->get();
-        if(count($employees->toArray()) > 0){
-                return response()->json([
-            'message' => 'You can\'t remove this company !',
-        ], 401);
+        $employees = $company->employees()->get();
+        if (count($employees) > 0) {
+            return response()->json([
+                'message' => 'You can\'t remove this company !',
+            ], 401);
         }
         $company->delete();
 

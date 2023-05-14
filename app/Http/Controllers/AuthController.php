@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use App\Models\History;
+use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,22 +14,19 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-        'name'=> 'required|string',
-        'email' => 'required|unique:users',
-        'cin' => 'required|unique:users',
-        'is_admin' => 'required|boolean',
-        'phone' => 'required|string',
-        'address' => 'required|string',
-        'date_of_birth'=>'required|date',
-        'company_id' => 'nullable|exist:companies',
-        'password' => 'required|string|confirmed'
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users',
+            'cin' => 'required|unique:users',
+            'is_admin' => 'required|boolean',
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'date_of_birth' => 'required|date',
+            'company_id' => 'nullable|exists:companies,id',
+            'password' => 'required|string|confirmed'
         ]);
 
 
         $user = new User;
-        if($request['company_id']){
-            $user->company_id = $request->input('company_id');
-        }
 
         $user->name = $request->input('name');
         $user->email = $request->input('email');
@@ -37,7 +37,51 @@ class AuthController extends Controller
         $user->is_admin = $request->input('is_admin');
         $user->password = bcrypt($request->input('password'));
 
-        $user->save();
+        if ($request['company_id']) {
+
+            $user->company_id = $request->input('company_id');
+
+            $invitation = Invitation::where('employee_email', $request->input('email'))->first();
+
+            $invitationConfirmation = new History;
+            $profileConfirmation = new History;
+
+            if ($invitation) {
+                $request->validate([
+                    'name' => 'required|exists:invitations,employee_name',
+                    'email' => 'required|exists:invitations,employee_email',
+                ]);
+                $invitation->is_accepted = true;
+                $invitation->accepted_at = now();
+
+                $invitationConfirmation->name = "Invitation Confirmation";
+                $invitationConfirmation->content = '"' . $request->input('name') . '" has accepted the invitation.';
+
+                $user->email_verified_at = now();
+                $user->save();
+
+                $company = Company::where('id', $request->input('company_id'))->first();
+
+                $invitationConfirmation->user()->associate($company->admin_id);
+
+                $invitation->employee()->associate($user->id);
+
+                $invitation->save();
+
+                $invitationConfirmation->save();
+
+                $profileConfirmation->name = "Profile Confirmation";
+                $profileConfirmation->content = '"' . $request->input('name') . '" has confirm his profile.';
+                $profileConfirmation->user()->associate($company->admin_id);
+                $profileConfirmation->save();
+            } else {
+                return response()->json([
+                    'message' => 'This invitation are not valid !'
+                ], 400);
+            }
+        } else {
+            $user->save();
+        }
 
         $token = $user->createToken('crudtoken')->plainTextToken;
 
@@ -48,9 +92,9 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'cin' => $user->cin,
                 'is_admin' => $user->is_admin,
-                'date_of_birth'=>$user->date_of_bith,
+                'date_of_birth' => $user->date_of_birth,
                 'phone' => $user->phone,
-                'address'=> $user->address
+                'address' => $user->address
             ],
             'token' => $token
         ], 201);
@@ -59,7 +103,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-         'email' => 'required|exists:users',
+            'email' => 'required|email|exists:users',
         ]);
 
         $email = $request->input("email");
@@ -73,46 +117,75 @@ class AuthController extends Controller
             ], 401);
         }
         $token = $user->createToken('crudtoken')->plainTextToken;
-
-        return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'cin' => $user->cin,
-                'is_admin' => $user->is_admin,
-                'date_of_birth' => $user->date_of_birth,
-                'phone' => $user->phone,
-                'address'=> $user->address
-            ],
-            'token' => $token
-        ], 200);
+        if (!$user->is_admin) {
+            $company = $user->company()->first();
+            $admin = $company->admin()->first();
+            $employees = $company->employees()->get();
+            return response()->json([
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'cin' => $user->cin,
+                    'company' => [
+                        'company_infos' => $company,
+                        'company_admin' => $admin,
+                        'company_employees' => $employees,
+                    ],
+                    'is_admin' => $user->is_admin,
+                    'date_of_birth' => $user->date_of_birth,
+                    'phone' => $user->phone,
+                    'address' => $user->address
+                ],
+                'token' => $token
+            ], 200);
+        } else
+            return response()->json([
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'cin' => $user->cin,
+                    'is_admin' => $user->is_admin,
+                    'date_of_birth' => $user->date_of_birth,
+                    'phone' => $user->phone,
+                    'address' => $user->address
+                ],
+                'token' => $token
+            ], 200);
     }
 
-    public function update(Request $request,User $user){
-        
-    }
-
-    public function updatePassword(Request $request)
+    public function update(Request $request, User $user)
     {
         $request->validate([
-            'old_password' => 'required|string',
-            'new_password' => 'required|string|confirmed'
+            'name' => 'nullable|string',
+            'email' => 'nullable|email|unique:users,email',
+            'cin' => 'nullable|unique:users,cin',
+            'phone' => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
-        if (!Hash::check($request->old_password, auth()->user()->password)) {
-            return response()->json([
-                'error' => 'Old password doesn\'t match!'
-            ], 401);
+        if ($request->input('name')) {
+            $user->name = $request->input('name');
+        }
+        if ($request->input('email')) {
+            $user->email = $request->input('email');
+        }
+        if ($request->input('cin')) {
+            $user->cin = $request->input('cin');
+        }
+        if ($request->input('address')) {
+            $user->address = $request->input('address');
+        }
+        if ($request->input('phone')) {
+            $user->phone = $request->input('phone');
         }
 
-        User::whereId(auth()->user()->id)->update([
-            'password' => Hash::make($request->new_password)
-        ]);
+        $user->save();
 
         return response()->json([
-            'message' => 'Password changed successfully!'
-        ], 201);
+            'user' => $user,
+        ], 200);
     }
 
     public function logout()

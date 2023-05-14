@@ -34,7 +34,7 @@ class InvitationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "email" => "required|email|unique:users",
+            "email" => "required|email|unique:users|unique:invitations,employee_email",
             "name" => "required|string",
             "link" => "required|string",
             "company_id" => "required|exists:companies,id",
