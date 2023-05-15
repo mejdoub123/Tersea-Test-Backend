@@ -20,7 +20,7 @@ The application consists of two protected areas, each requiring authentication:
 
 1. Clone the repository:
 
-git clone https://github.com/your-username/Tearsea-Test-Backend.git
+git clone https://github.com/mejdoub123/Tearsea-Test-Backend.git
 
 2. Install the dependencies by navigating into the project directory and running the following command:
 
