@@ -54,7 +54,7 @@ The application provides the following REST API endpoints:
 -   `GET /api/histories`: Retrieve a list of all admins histories (Administrator only).
 -   `GET /api/histories/{admin_id}`: Retrieve a list of histories of a specific admin (Administrator only).
 -   `PUT /api/users/{user_id}`: Update the details of a specific user (Administrator or Employee).
--   `GET /api/search`: Search for a company or employee (Administrator only).
+-   `POST /api/search`: Search for a company or employee (Administrator only).
 
 ## Conclusion
 

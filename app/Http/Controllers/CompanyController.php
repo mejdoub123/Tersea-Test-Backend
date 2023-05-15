@@ -100,9 +100,9 @@ class CompanyController extends Controller
             'searched_value' => 'required|string'
         ]);
 
-        $companies = Company::where('name', 'like', '%' . $request->input('searched_value') . '%')->get();
+        $companies = Company::where('name', 'like', '%' . $request->input('searched_value') . '%')->orderBy('name')->get();
 
-        $employees = User::where('is_admin', false)->where('name', 'like', '%' . $request->input('searched_value') . '%')->get();
+        $employees = User::where('is_admin', false)->where('name', 'like', '%' . $request->input('searched_value') . '%')->orderBy('name')->get();
         return response()->json([
             'results' => [
                 'companies' => $companies,
